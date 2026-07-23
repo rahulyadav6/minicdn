@@ -19,3 +19,21 @@ export const createProject = async (req,res)=>{
     }
 };
 
+export const getProjects = async(req,res)=>{
+    try {
+        const projects = await Project.find({
+            owner: req.user._id,
+        })
+        .select("-apiKey -owner -updatedAt -__v")
+        .sort({
+            createdAt: -1,
+        });
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+
