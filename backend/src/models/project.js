@@ -16,6 +16,11 @@ const projectSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+        apiKey:{
+            type:String,
+            unique: true,
+            required: true,
+        },
     },
     {
         timestamps: true,
