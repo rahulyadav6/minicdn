@@ -45,6 +45,7 @@ export const getProjectById = async(req,res)=>{
                 message: "Project not found",
             });
         }
+
         if (project.owner._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 message: "Access denied",

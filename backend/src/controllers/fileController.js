@@ -16,6 +16,7 @@ export const uploadFile = async (req, res) => {
             });
         }
 
+
         if (!req.file) {
             return res.status(400).json({
                 message: "No file uploaded",
@@ -47,3 +48,31 @@ export const uploadFile = async (req, res) => {
         });
     }
 };
+
+export const getProjectFiles = async(req,res)=>{
+    try {
+        const project = await Project.findById(req.params.projectId);
+        if(!project){
+            return res.status(404).json({
+                message: "Project not found",
+            });
+        }
+        if (project.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: "Access denied",
+            });
+        }
+
+        const files = await File.find({
+            project: project._id,
+        }).select("-__v -updatedAt -project -uploadedBy")
+            .sort({
+                createdAt: -1,
+        });
+        res.status(200).json(files);
+    } catch(error){
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+}
