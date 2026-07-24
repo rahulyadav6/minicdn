@@ -18,9 +18,9 @@ const fileSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        path:{
+        relativePath: {
             type: String,
-            required: true
+            required: true,
         },
         project:{
             type: mongoose.Schema.Types.ObjectId,
