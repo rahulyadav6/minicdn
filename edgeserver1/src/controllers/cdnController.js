@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { getCachePath } from "../utils/cachePath.js";
+import { CACHE_TTL } from "../utils/constants.js";
 import axios from "axios";
 
 export const handleRequest = async (req, res) => {
@@ -13,13 +14,16 @@ export const handleRequest = async (req, res) => {
         const absoluteCachePath = path.resolve(cachePath);
 
         if (fs.existsSync(absoluteCachePath)) {
-
-            console.log("✅ Cache HIT");
-
-            return res.sendFile(absoluteCachePath);
+            const stats = fs.statSync(absoluteCachePath);
+            const age = (Date.now() - stats.mtimeMs) / 1000;
+            if (age < CACHE_TTL) {
+                console.log("✅ Cache HIT");
+                return res.sendFile(absoluteCachePath);
+            }
+            console.log("⏰ Cache EXPIRED");
+        }else{
+            console.log("❌ Cache MISS");
         }
-
-        console.log("❌ Cache MISS");
 
         console.log("Origin URL:", process.env.ORIGIN_URL);
 
