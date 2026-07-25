@@ -18,11 +18,14 @@ export const invalidateCache = async(req, res) =>{
             success:true,
             message: "Cache invalidated",
         })
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to invalidate cache",
-        });
-    }
+    }catch (error) {
+    console.error("Invalidate Error:");
+    console.error(error);
+
+    return res.status(500).json({
+        success: false,
+        message: error.message,
+        stack: error.stack,
+    });
+}
 }
