@@ -1,14 +1,17 @@
-const edges = [
-    process.env.EDGE1,
-    process.env.EDGE2,
-];
+import { EDGES } from "./edges.js";
 
 let current = 0;
-export const getEdgeOrder  = ()=>{
+
+export const getEdgeOrder = () => {
     const orderedEdges = [];
-    for(let i=0; i<edges.length; i++){
-        orderedEdges.push(edges[(current+i) % edges.length]);
+
+    for (let i = 0; i < EDGES.length; i++) {
+        orderedEdges.push(
+            EDGES[(current + i) % EDGES.length]
+        );
     }
-    current = (current + 1) % edges.length;
+
+    current = (current + 1) % EDGES.length;
+
     return orderedEdges;
-}
+};
