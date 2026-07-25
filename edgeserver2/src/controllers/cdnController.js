@@ -3,6 +3,7 @@ import path from "path";
 import { getCachePath } from "../utils/cachePath.js";
 import { CACHE_TTL } from "../utils/constants.js";
 import axios from "axios";
+import { metrics } from "../utils/metricsStore.js";
 
 export const handleRequest = async (req, res) => {
     try {
@@ -18,11 +19,13 @@ export const handleRequest = async (req, res) => {
             const age = (Date.now() - stats.mtimeMs) / 1000;
             if (age < CACHE_TTL) {
                 console.log("✅ Cache HIT");
+                metrics.cacheHits++;
                 return res.sendFile(absoluteCachePath);
             }
             console.log("⏰ Cache EXPIRED");
         }else{
             console.log("❌ Cache MISS");
+            metrics.cacheMisses++;
         }
 
         console.log("Origin URL:", process.env.ORIGIN_URL);
@@ -35,6 +38,7 @@ export const handleRequest = async (req, res) => {
         );
 
         console.log("Fetched from Origin");
+        metrics.originFetches++;
 
         const cacheDir = path.dirname(absoluteCachePath);
         fs.mkdirSync(cacheDir, { recursive: true });
