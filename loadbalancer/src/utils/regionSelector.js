@@ -1,24 +1,41 @@
 import { EDGES } from "./edges.js";
+import { edgeHealth } from "./healthStore.js";
 import { getEdgeOrder } from "./edgeSelector.js";
 
 export const getRegionEdgeOrder = (preferredRegion) => {
 
-    // No region provided → use Round Robin
-    if (!preferredRegion) {
-        return getEdgeOrder();
+    // Only keep healthy edges
+    const healthyEdges = EDGES.filter(edge =>
+        edgeHealth.get(edge.url)?.healthy
+    );
+
+    // If every edge is down, return an empty array
+    if (healthyEdges.length === 0) {
+        return [];
     }
 
-    const preferredEdge = EDGES.find(
+    // No region → Round Robin among healthy edges
+    if (!preferredRegion) {
+
+        const orderedEdges = getEdgeOrder();
+
+        return orderedEdges.filter(edge =>
+            edgeHealth.get(edge.url)?.healthy
+        );
+    }
+
+    // Find preferred healthy edge
+    const preferredEdge = healthyEdges.find(
         edge => edge.region === preferredRegion
     );
 
-    // Invalid region → use Round Robin
+    // Region doesn't exist or preferred edge is down
     if (!preferredEdge) {
-        return getEdgeOrder();
+        return healthyEdges;
     }
 
-    const otherEdges = EDGES.filter(
-        edge => edge.region !== preferredRegion
+    const otherEdges = healthyEdges.filter(
+        edge => edge.url !== preferredEdge.url
     );
 
     return [preferredEdge, ...otherEdges];
