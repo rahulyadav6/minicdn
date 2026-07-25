@@ -4,8 +4,11 @@ const edges = [
 ];
 
 let current = 0;
-export const getNextEdge = ()=>{
-    const edge = edges[current];
-    current = (current+1) % edges.length;
-    return edge;
+export const getEdgeOrder  = ()=>{
+    const orderedEdges = [];
+    for(let i=0; i<edges.length; i++){
+        orderedEdges.push(edges[(current+i) % edges.length]);
+    }
+    current = (current + 1) % edges.length;
+    return orderedEdges;
 }
