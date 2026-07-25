@@ -1,11 +1,11 @@
 import axios from "axios";
-import { getEdgeOrder  } from "../utils/edgeSelector.js";
+import { getEdgeOrder } from "../utils/edgeSelector.js";
 
-export const proxyRequest = async(req,res)=>{
+export const proxyRequest = async (req, res) => {
 
-    const {projectId, filename } = req.params;
+    const { projectId, filename } = req.params;
     const edges = getEdgeOrder();
-    for(const edge of edges){
+    for (const edge of edges) {
         try {
             console.log(`Trying ${edge}`);
             const response = await axios.get(
@@ -23,10 +23,23 @@ export const proxyRequest = async(req,res)=>{
 
             return res.send(response.data);
         } catch (error) {
-            console.log(`❌ ${edge} unavailable`);
+
+            if (error.response) {
+                console.log(
+                    `❌ ${edge} responded with ${error.response.status}`
+                );
+                // If the file doesn't exist, don't try the next edge.
+                if (error.response.status === 404) {
+                    return res.status(404).json({
+                        message: "File not found",
+                    });
+                }
+            }else{
+                console.log(`❌ ${edge} is unreachable`);
+            }
         }
     }
-     return res.status(503).json({
+    return res.status(503).json({
         message: "All Edge Servers are unavailable",
     });
 };
