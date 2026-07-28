@@ -25,15 +25,17 @@ export default function LoginPage(){
                                 id="email"
                                 type="email"
                                 placeholder="Enter your email"
+                                className="h-10"
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <Label htmlFor="password">Password</Label>
                             <Input
                                 id="password"
                                 type="password"
-                                placeholder="....."
+                                placeholder="Password"
+                                className="h-10"
                             />
                         </div>
 
