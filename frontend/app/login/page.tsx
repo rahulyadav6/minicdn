@@ -1,12 +1,26 @@
-import AuthLayout from "@/components/layout/auth-layout";
+"use client";
 
+import AuthLayout from "@/components/layout/auth-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
+import { useState } from "react";
+
+
 export default function LoginPage(){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>)=>{
+        e.preventDefault();
+        console.log(email);
+        console.log(password);
+        
+    }
+
     return (
         <AuthLayout>
             <Card className="w-full max-w-md p-5">
@@ -17,7 +31,7 @@ export default function LoginPage(){
                 </CardHeader>
                 
                 <CardContent>
-                    <form className="space-y-5">
+                    <form className="space-y-5" onSubmit={handleSubmit}>
 
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
@@ -26,6 +40,8 @@ export default function LoginPage(){
                                 type="email"
                                 placeholder="Enter your email"
                                 className="h-10"
+                                value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
                             />
                         </div>
 
@@ -36,10 +52,12 @@ export default function LoginPage(){
                                 type="password"
                                 placeholder="Password"
                                 className="h-10"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
 
-                        <Button className="w-full cursor-pointer">Sign in</Button>
+                        <Button className="w-full cursor-pointer" type="submit">Sign in</Button>
 
                         <p>
                             Don't have an account?{" "}
