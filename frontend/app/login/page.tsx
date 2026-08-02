@@ -9,15 +9,35 @@ import Link from "next/link";
 
 import { useState } from "react";
 
+import axios from "axios";
+import { toast } from "sonner";
+import { BASE_URL } from "@/services/api";
+import { loginSchema } from "@/schemas/loginSchema";
 
 export default function LoginPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>)=>{
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
-        console.log(email);
-        console.log(password);
+        const result =  loginSchema.safeParse({
+            email,
+            password
+        });
+        if(!result.success){
+            toast.error(result.error.issues[0].message);
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/auth/login`, {email, password}
+            );
+            console.log(response.data);
+            
+        } catch (error) {
+            console.log(error);
+        }
         
     }
 
