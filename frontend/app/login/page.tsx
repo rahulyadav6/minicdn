@@ -29,17 +29,20 @@ export default function LoginPage(){
             return;
         }
 
-        try {
+        try{
             const response = await axios.post(
                 `${BASE_URL}/auth/login`, {email, password}
             );
             console.log(response.data);
+            const token = response.data.token;
+            localStorage.setItem("token", token);
+            toast.success("Login successful");
             
-        } catch (error) {
+        }catch(error){
             console.log(error);
-        }
-        
-    }
+            toast.error("Invalid email or password");
+        }   
+    };
 
     return (
         <AuthLayout>
